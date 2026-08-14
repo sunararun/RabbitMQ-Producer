@@ -9,6 +9,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.boot.testcontainers.service.connection.ServiceConnection;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Import;
 import org.testcontainers.containers.RabbitMQContainer;
 
 import java.time.Duration;
@@ -19,6 +20,7 @@ import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.awaitility.Awaitility.waitAtMost;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+@Import(TestConsumer123.class)
 class RabbitMqIntegrationTest {
 
     @ServiceConnection
@@ -28,7 +30,7 @@ class RabbitMqIntegrationTest {
     private AmqpTemplate amqpTemplate;
 
     @Autowired
-    private TestConsumer testConsumer;
+    private TestConsumer123 testConsumer;
 
     @Test
     void testMessageProcessing() {
@@ -39,9 +41,9 @@ class RabbitMqIntegrationTest {
         waitAtMost(Duration.ofSeconds(5)).untilAsserted(() -> {
             assertThat(testConsumer.getReceivedMessages());
         });
-        System.out.println("^^^^^^^^^^^^^^ " + stringList);
+        System.out.println("^^^^^^^^^^^^^^=>> " + stringList);
     }
-
+/*
     @TestConfiguration
     static class TestConfig {
         @Bean
@@ -61,5 +63,5 @@ class RabbitMqIntegrationTest {
         public List<String> getReceivedMessages() {
             return receivedMessages;
         }
-    }
+    }*/
 }
